@@ -39,15 +39,41 @@
 
 /*
  *
+ * Function prototypes
+ *
+ */
+ char *parse_transaction_string(char *transaction_field, char *complete_transaction_string);
+ 
+
+
+/*
+ *
  * Main function
  *
  */
 int main(void)
 {
    FILE *fp;
-   char complete_budget[MAX_TRANSACTIONS][MAX_TRANSACTION_LENGTH + 1] = {0};
-   char complete_transaction_string[MAX_TRANSACTION_LENGTH + 1] = {0};
+   
+   /* Array for holding all our structure transactions
+   struct transaction
+   {
+      char date[DATE_LENGTH];
+      char amount[AMOUNT_LENGTH];
+      char type[TYPE_LENGTH];
+      char description[DESCRIPTION_LENGTH];
+   } budget[MAX_TRANSACTIONS];
+   */
+   struct transaction budget[MAX_TRANSACTIONS];
+   
+   char complete_transaction_string[MAX_TRANSACTION_LENGTH + 1];
    char main_menu_input_string[MENU_INPUT_LENGTH + 1];
+   char *transaction_string_index;
+   char date_string[DATE_LENGTH];
+   char amount_string[AMOUNT_LENGTH];
+   char type_string[TYPE_LENGTH];
+   char description_string[DESCRIPTION_LENGTH];
+   
    int number_of_transactions = 0;
    int menu_option_to_int;
    int read_input_return_code;
@@ -66,9 +92,10 @@ int main(void)
    }
    
    /*
-    * Read the transactions from file. Stop filling the 2d array after we
-    * reach the max number of transactions. If we can read another transaction,
-    * above the max, the file is too large, and we will exit.
+    * Read the transactions from file. Stop filling the structure array after
+    * we reach the max number of transactions. If we can read another
+    * transaction, above the max, the file is too large, and we will exit.
+    * 
     */
    while(
       fgets
@@ -91,10 +118,27 @@ int main(void)
          return EXIT_FAILURE;
       }
       
-      /* Put the current line of the text file into our 2d array */
-      strcpy(complete_budget[number_of_transactions],
-         complete_transaction_string);
+      /* Put the current line of the text file into the members of
+       * the transactions structures in our array */
+       
+      /* Keep track of our position as we read from the
+       * complete_transaction_string array */
+      transaction_string_index = complete_transaction_string;
+   
+      transaction_string_index = parse_transaction_string(
+         date_string, transaction_string_index);
+      transaction_string_index = parse_transaction_string(
+         amount_string, transaction_string_index);
+      transaction_string_index = parse_transaction_string(
+         type_string, transaction_string_index);
+      transaction_string_index = parse_transaction_string(
+         description_string, transaction_string_index);
          
+      strcpy(budget[number_of_transactions].date, date_string);
+      strcpy(budget[number_of_transactions].amount, amount_string);
+      strcpy(budget[number_of_transactions].type, type_string);
+      strcpy(budget[number_of_transactions].description, description_string);
+      
       number_of_transactions++;
    }
    
@@ -130,8 +174,10 @@ int main(void)
              */
             if(number_of_transactions < MAX_TRANSACTIONS)
             {
+               /*
                number_of_transactions = create_transaction(&number_of_transactions,
-                  *complete_budget);
+                  *budget);
+               */
             }
             else
             {
@@ -142,7 +188,7 @@ int main(void)
          else if(menu_option_to_int == 2)
          {
             number_of_transactions =
-                  read_transactions(&number_of_transactions, *complete_budget);
+               read_transactions(&number_of_transactions, (struct transaction *)(budget));
          }
          else if(menu_option_to_int == 3)
          {
@@ -154,8 +200,10 @@ int main(void)
             }
             else
             {
+               /*
                number_of_transactions =
-                  update_transaction(&number_of_transactions, *complete_budget);
+                  update_transaction(&number_of_transactions, *budget);
+               */
             }
          }
          else if(menu_option_to_int == 4)
@@ -168,8 +216,10 @@ int main(void)
             }
             else
             {
+               /*
                number_of_transactions =
-                  delete_transaction(&number_of_transactions, *complete_budget);
+                  delete_transaction(&number_of_transactions, *budget);
+               */
             }
          }
          else if(menu_option_to_int == 5)
@@ -187,6 +237,29 @@ int main(void)
          printf("Invalid option entered. Please try again.\n");
       }
    }
+}
+
+
+
+/* Separate a full transaction line from the budget file
+ * into its component parts (i.e., date, amount, type,
+ * and descirption
+ */
+char *parse_transaction_string(char *transaction_field, char *complete_transaction_string)
+{
+   char *p;
+   p = transaction_field;
+   
+   while((*complete_transaction_string != '|') && (*complete_transaction_string))
+   {
+      *p = *complete_transaction_string++;
+      p++;
+   }
+   
+   *p = '\0';
+   p = ++complete_transaction_string;
+   
+   return p;
 }
 
 

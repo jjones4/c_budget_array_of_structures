@@ -23,7 +23,7 @@
 #include "c_budget_read_input.h"
 
 int create_transaction(int *number_of_transactions, char complete_budget[MAX_TRANSACTION_LENGTH + 1]);
-int read_transactions(int *number_of_transactions, char complete_budget[MAX_TRANSACTION_LENGTH + 1]);
+int read_transactions(int *number_of_transactions, struct transaction *line_item);
 int update_transaction(int *number_of_transactions, char complete_budget[MAX_TRANSACTION_LENGTH + 1]);
 int delete_transaction(int *number_of_transactions, char complete_budget[MAX_TRANSACTION_LENGTH + 1]);
 

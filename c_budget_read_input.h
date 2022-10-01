@@ -68,6 +68,16 @@ int read_description_input(char *description_string);
 
 
 
+/* Array for holding all our structure transactions */
+struct transaction
+{
+   char date[DATE_LENGTH];
+   char amount[AMOUNT_LENGTH];
+   char type[TYPE_LENGTH];
+   char description[DESCRIPTION_LENGTH];
+};
+
+
 #endif
 
 

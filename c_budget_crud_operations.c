@@ -147,7 +147,7 @@ int create_transaction(int *number_of_transactions, char complete_budget[MAX_TRA
    strcpy(complete_budget + *number_of_transactions * (MAX_TRANSACTION_LENGTH + 1),
       complete_transaction_string);
    
-   /* Hancy code for looping through our 2d array */
+   /* Handy code for looping through our 2d array */
    /*
    for(j = 0, i = 0; i < (*number_of_transactions + 1) * (MAX_TRANSACTION_LENGTH + 1);)
    {
@@ -169,54 +169,24 @@ int create_transaction(int *number_of_transactions, char complete_budget[MAX_TRA
 
 
 
-int read_transactions(int *number_of_transactions, char complete_budget[MAX_TRANSACTION_LENGTH + 1])
+int read_transactions(int *number_of_transactions, struct transaction *line_item)
 {
-   FILE *fp;
-   char date_string[DATE_LENGTH + 1];
-   char amount_string[AMOUNT_LENGTH + 1];
-   char type_string[TYPE_LENGTH + 1];
-   char description_string[DESCRIPTION_LENGTH + 1];
-   char *transaction_string_index;
-   int i, j;
-   
-   /*
-    * Check for the existence of budget.txt
-    * Terminate if can't open for reading.
-    */
-   fp = fopen(FILE_NAME, "a+");
-   if(fp == NULL)
-   {
-      printf("\nFile error.\n\n");
-      printf("Please ensure %s exists, and try again.\n\n", FILE_NAME);
-      exit(EXIT_FAILURE);
-   }
+   int i;
    
    printf("%-10s\t%-11s\t%-10s\t%-5s\t%-50s\n", "Id", "Date", "Amount", "Type", "Description");
    printf("%10s\t%-11s\t%-10s\t%-5s\t%-50s\n", "----------", "-----------", "----------", "-----",
           "--------------------------------------------------");
    
-   /* Print out the transactions from the 2d array */
-   for(j = 0, i = 0; i < (*number_of_transactions) * (MAX_TRANSACTION_LENGTH + 1);)
+   /* Print out the transactions from structure transactions array */
+   for(i = 0; i < *number_of_transactions; i++)
    {
-      /* Keep track of our position as we read from the complete_transaction_string array */
-      transaction_string_index = (complete_budget + i);
-   
-      transaction_string_index = parse_transaction_string(date_string, transaction_string_index);
-      transaction_string_index = parse_transaction_string(amount_string, transaction_string_index);
-      transaction_string_index = parse_transaction_string(type_string, transaction_string_index);
-      transaction_string_index = parse_transaction_string(description_string, transaction_string_index);
-      
-      printf("%10d\t%-11s\t%10s\t%5s\t%-50s\n", j + 1, date_string,
-         amount_string, type_string, description_string);
-         
-      j++;
-      i += (MAX_TRANSACTION_LENGTH + 1);
+      printf("%10d\t%-11s\t%10s\t%5s\t%-50s\n", i + 1, line_item->date, line_item->amount,
+         line_item->type, line_item->description);
+      line_item++;
    }
    
    return *number_of_transactions;
 }
-
-
 
 int update_transaction(int *number_of_transactions, char complete_budget[MAX_TRANSACTION_LENGTH + 1])
 {
@@ -544,7 +514,7 @@ int delete_transaction(int *number_of_transactions, char complete_budget[MAX_TRA
 /* Separate a full transaction line from the budget file
  * into its component parts (i.e., date, amount, type,
  * and descirption
- */
+ *
 char *parse_transaction_string(char *transaction_field, char *complete_transaction_string)
 {
    char *p;
@@ -562,5 +532,5 @@ char *parse_transaction_string(char *transaction_field, char *complete_transacti
    return p;
 }
 
-
+*/
 
