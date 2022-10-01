@@ -15,15 +15,15 @@ CC = gcc
 CFLAGS = -g -Wall -Wextra -O -W -pedantic -ansi -std=c89
 
 # the build target executable:
-TARGET = c_budget
+TARGET = c_budget_array_of_structures
 
 all: $(TARGET)
   
-$(TARGET): c_budget.o c_budget_menus.o c_budget_validation.o c_budget_read_input.o c_budget_crud_operations.o
-	$(CC) $(CFLAGS) -o c_budget c_budget.o c_budget_menus.o c_budget_validation.o c_budget_read_input.o c_budget_crud_operations.o
+$(TARGET): c_budget_array_of_structures.o c_budget_menus.o c_budget_validation.o c_budget_read_input.o c_budget_crud_operations.o
+	$(CC) $(CFLAGS) -o c_budget_array_of_structures c_budget_array_of_structures.o c_budget_menus.o c_budget_validation.o c_budget_read_input.o c_budget_crud_operations.o
 
 c_budget.o: $(TARGET).c c_budget_menus.c c_budget_validation.c c_budget_read_input.c c_budget_crud_operations.c
-	$(CC) $(CFLAGS) -c c_budget.c
+	$(CC) $(CFLAGS) -c c_budget_array_of_structures.c
 
 c_budget_crud_operations.o: c_budget_crud_operations.c c_budget_crud_operations.h
 	$(CC) $(CFLAGS) -c c_budget_crud_operations.c
