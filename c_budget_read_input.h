@@ -2,18 +2,19 @@
  *
  * Name:       c_budget_read_input.h
  *
- * Purpose:    Define macros and function prototypes for data input.
+ * Purpose:    Function prototypes for c_budget_read_input.c
  *
  * Author:     jjones4
  *
  * Copyright (c) 2022 Jerad Jones
- * This file is part of c_budget_2d_array.  c_budget_2d_array may be
- * freely distributed under the MIT license.  For all details and
- * documentation, see
+ * This file is part of c_budget_array_of_structures.
+ * c_budget_array_of_structures may be freely distributed under the
+ * MIT license.  For all details and documentation, see
  *
- * https://github.com/jjones4/c_budget_2d_array
+ * https://github.com/jjones4/c_budget_array_of_structures
  *
  */
+
 
 
 
