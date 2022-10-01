@@ -5,14 +5,15 @@
  * Purpose:    Contains functions for adding, displaying, updating,
  *	       or removing a budget transaction.
  *
-
+ *
  * Author:     jjones4
  *
  * Copyright (c) 2022 Jerad Jones
- * This file is part of c_budget.  c_budget may be freely distributed
- * under the MIT license.  For all details and documentation, see
- 
- * https://github.com/jjones4/c_budget
+ * This file is part of c_budget_array_of_structures.
+ * c_budget_array_of_structures may be freely distributed under the
+ * MIT license.  For all details and documentation, see
+ *
+ * https://github.com/jjones4/c_budget_array_of_structures
  *
  */
 
