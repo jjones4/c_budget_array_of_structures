@@ -9,7 +9,7 @@ To compile and link c_budget's source files, I am using GCC and Make. You can co
 1. Download all the source files and the makefile into your chosen directory.
 2. Point your terminal to the directory.
 3. Use the makefile included with c_budget to compile and link the source files.
-4. If you have installed Make, run the following command: make c_budget
+4. If you have installed Make, run the following command: make c_budget_array_of_structures
 
 I plan to use various data structures to improve c_budget. I am rebuilding c_budget in the following order (please see my repository for various versions of c_budget):
 
