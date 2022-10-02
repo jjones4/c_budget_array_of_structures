@@ -55,28 +55,20 @@ int main(void)
 {
    FILE *fp;
    
-   /* Array for holding all our structure transactions
-   struct transaction
-   {
-      char date[DATE_LENGTH];
-      char amount[AMOUNT_LENGTH];
-      char type[TYPE_LENGTH];
-      char description[DESCRIPTION_LENGTH];
-   } budget[MAX_TRANSACTIONS];
-   */
    struct transaction budget[MAX_TRANSACTIONS];
    
    char complete_transaction_string[MAX_TRANSACTION_LENGTH + 1];
    char main_menu_input_string[MENU_INPUT_LENGTH + 1];
    char *transaction_string_index;
-   char date_string[DATE_LENGTH];
-   char amount_string[AMOUNT_LENGTH];
-   char type_string[TYPE_LENGTH];
-   char description_string[DESCRIPTION_LENGTH];
+   char date_string[DATE_LENGTH + 1];
+   char amount_string[AMOUNT_LENGTH + 1];
+   char type_string[TYPE_LENGTH + 1];
+   char description_string[DESCRIPTION_LENGTH + 1];
    
    int number_of_transactions = 0;
    int menu_option_to_int;
    int read_input_return_code;
+   /* int i; */
    
    /*
     * Check for the existence of budget.txt
@@ -144,6 +136,13 @@ int main(void)
    
    fclose(fp);
    
+   /* Test code
+   for(i = 0; i < number_of_transactions; i++)
+   {
+      printf("\n%d %s %s %s %s\n", i + 1, budget[i].date, budget[i].amount, budget[i].type, budget[i].description);
+   }
+   */
+   
    for( ;; )
    {
       display_main_menu();
@@ -174,21 +173,22 @@ int main(void)
              */
             if(number_of_transactions < MAX_TRANSACTIONS)
             {
-               /*
                number_of_transactions = create_transaction(&number_of_transactions,
-                  *budget);
-               */
+                  (struct transaction *)(budget));
             }
             else
             {
-               printf("\n\nThe file contains the max number of transactions.\n");
+               printf("\n\nThe file contains the max number of lines.\n");
                printf("\nWe cannot add any more transactions.\n");
             }
          }
          else if(menu_option_to_int == 2)
          {
+            /* We don't need to check the number of transactions because
+             * the program exits above if too many records are found */
             number_of_transactions =
-               read_transactions(&number_of_transactions, (struct transaction *)(budget));
+               read_transactions(&number_of_transactions,
+               (struct transaction *)(budget));
          }
          else if(menu_option_to_int == 3)
          {
@@ -200,10 +200,9 @@ int main(void)
             }
             else
             {
-               /*
                number_of_transactions =
-                  update_transaction(&number_of_transactions, *budget);
-               */
+                  update_transaction(&number_of_transactions,
+                  (struct transaction *)(budget));
             }
          }
          else if(menu_option_to_int == 4)
@@ -216,10 +215,9 @@ int main(void)
             }
             else
             {
-               /*
                number_of_transactions =
-                  delete_transaction(&number_of_transactions, *budget);
-               */
+                  delete_transaction(&number_of_transactions,
+                  (struct transaction *)(budget));
             }
          }
          else if(menu_option_to_int == 5)

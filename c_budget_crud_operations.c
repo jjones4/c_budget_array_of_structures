@@ -35,7 +35,7 @@ char *parse_transaction_string(char *transaction_field, char *complete_transacti
 
 
 
-int create_transaction(int *number_of_transactions, char complete_budget[MAX_TRANSACTION_LENGTH + 1])
+int create_transaction(int *number_of_transactions, struct transaction *line_item)
 {
    FILE *fp;
    char complete_transaction_string[MAX_TRANSACTION_LENGTH + 1] = {0};
@@ -134,6 +134,13 @@ int create_transaction(int *number_of_transactions, char complete_budget[MAX_TRA
       }
    } while(!valid_description);
    
+   /* Add the new transaction to the array of structures */
+   line_item += *number_of_transactions;
+   strcpy(line_item->date, date_string);
+   strcpy(line_item->amount, amount_string);
+   strcpy(line_item->type, type_string);
+   strcpy(line_item->description, description_string);
+   
    strcpy(complete_transaction_string, date_string);
    strcat(complete_transaction_string, "|");
    strcat(complete_transaction_string, amount_string);
@@ -142,20 +149,6 @@ int create_transaction(int *number_of_transactions, char complete_budget[MAX_TRA
    strcat(complete_transaction_string, "|");
    strcat(complete_transaction_string, description_string);
    strcat(complete_transaction_string, "|");
-   
-   /* Put the new transaction into the 2d array as the last element */
-   strcpy(complete_budget + *number_of_transactions * (MAX_TRANSACTION_LENGTH + 1),
-      complete_transaction_string);
-   
-   /* Handy code for looping through our 2d array */
-   /*
-   for(j = 0, i = 0; i < (*number_of_transactions + 1) * (MAX_TRANSACTION_LENGTH + 1);)
-   {
-      printf("\nRecord %d: %s\n", *number_of_transactions, complete_budget + i);
-      j++;
-      i += (MAX_TRANSACTION_LENGTH + 1);
-   }
-   */
    
    /* Write record to budget.txt */
    fprintf(fp, "%s", complete_transaction_string);
@@ -188,17 +181,16 @@ int read_transactions(int *number_of_transactions, struct transaction *line_item
    return *number_of_transactions;
 }
 
-int update_transaction(int *number_of_transactions, char complete_budget[MAX_TRANSACTION_LENGTH + 1])
+int update_transaction(int *number_of_transactions, struct transaction *line_item)
 {
    FILE* temp_pointer;
-   char complete_transaction_string[MAX_TRANSACTION_LENGTH + 1];
    char id_string[MENU_INPUT_LENGTH + 1];
    char menu_string[MENU_INPUT_LENGTH + 1];
    char date_string[DATE_LENGTH + 1];
    char amount_string[AMOUNT_LENGTH + 1];
    char type_string[TYPE_LENGTH + 1];
    char description_string[DESCRIPTION_LENGTH + 1];
-   char *transaction_string_index;
+   struct transaction *p;
    
    BOOL valid_id = FALSE;
    BOOL valid_date= FALSE;
@@ -207,7 +199,7 @@ int update_transaction(int *number_of_transactions, char complete_budget[MAX_TRA
    
    int i, id = 0;
    
-   (void) read_transactions(number_of_transactions, complete_budget);
+   (void) read_transactions(number_of_transactions, line_item);
    
    do
    {
@@ -234,20 +226,6 @@ int update_transaction(int *number_of_transactions, char complete_budget[MAX_TRA
          valid_id = TRUE;
       }
    } while(!valid_id);
-   
-   /* Go through the file until we get to the transaction line
-    * of the ID that the user gave. We will store this lilne
-    * in the complete_transaction_string
-    */
-   strcpy(complete_transaction_string, complete_budget + ((id - 1) * (MAX_TRANSACTION_LENGTH + 1)));
-   
-   /* Keep track of our position as we read from the complete_transaction_string array */
-   transaction_string_index = complete_transaction_string;
-   
-   transaction_string_index = parse_transaction_string(date_string, transaction_string_index);
-   transaction_string_index = parse_transaction_string(amount_string, transaction_string_index);
-   transaction_string_index = parse_transaction_string(type_string, transaction_string_index);
-   transaction_string_index = parse_transaction_string(description_string, transaction_string_index);
    
    /* Let the user choose which field they want to update */
    do
@@ -282,7 +260,12 @@ int update_transaction(int *number_of_transactions, char complete_budget[MAX_TRA
          {
             printf("\nThe date you entered was invalid. Please try again.\n");
          }
-         
+         else
+         {
+            p = line_item;
+            p += id - 1;
+            strcpy(p->date, date_string);
+         }
       } while(!valid_date);
    }
    else if(*menu_string == '2')
@@ -305,6 +288,12 @@ int update_transaction(int *number_of_transactions, char complete_budget[MAX_TRA
          {
             printf("\nThe amount you entered was invalid. Please try again.\n");
          }
+         else
+         {
+            p = line_item;
+            p += id - 1;
+            strcpy(p->amount, amount_string);
+         }
       } while(!valid_amount);
    }
    else if(*menu_string == '3')
@@ -324,6 +313,12 @@ int update_transaction(int *number_of_transactions, char complete_budget[MAX_TRA
          if(!is_valid_type(type_string))
          {
             printf("\nThe type you entered was invalid. Please try again.\n");
+         }
+         else
+         {
+            p = line_item;
+            p += id - 1;
+            strcpy(p->type, type_string);
          }
       } while(!is_valid_type(type_string));
    }
@@ -347,6 +342,12 @@ int update_transaction(int *number_of_transactions, char complete_budget[MAX_TRA
          {
             printf("\nThe description you entered was invalid. Please try again.\n");
          }
+         else
+         {
+            p = line_item;
+            p += id - 1;
+            strcpy(p->description, description_string);
+         }
       } while(!valid_description);
    }
    else if(*menu_string == '5')
@@ -359,24 +360,8 @@ int update_transaction(int *number_of_transactions, char complete_budget[MAX_TRA
          printf("\nInvalid option entered. Please try again.\n");
    }
    
-   /* Rebuild the complete_transaction_string with any new data given
-    * by the user
-    */
-    
-   strcpy(complete_transaction_string, date_string);
-   strcat(complete_transaction_string, "|");
-   strcat(complete_transaction_string, amount_string);
-   strcat(complete_transaction_string, "|");
-   strcat(complete_transaction_string, type_string);
-   strcat(complete_transaction_string, "|");
-   strcat(complete_transaction_string, description_string);
-   strcat(complete_transaction_string, "|");
-   
-   /* Put the new transaction into the 2d array as the last element */
-   strcpy(complete_budget + ((id - 1) * (MAX_TRANSACTION_LENGTH + 1)),
-      complete_transaction_string);
-   
-   /* Move the new data to a temp file
+   /*
+    * Move the new data to a temp file
     * Remove the original file, and rename the temp file
     * containing the new data
     */
@@ -390,7 +375,8 @@ int update_transaction(int *number_of_transactions, char complete_budget[MAX_TRA
    
    for(i = 0; i < *number_of_transactions; i++)
    {
-      fprintf(temp_pointer, "%s", complete_budget + (i * (MAX_TRANSACTION_LENGTH + 1)));
+      fprintf(temp_pointer, "%s|%s|%s|%s|\n", line_item->date, line_item->amount, line_item->type, line_item->description);
+      line_item++;
    }
    
    fclose(temp_pointer);
@@ -403,9 +389,12 @@ int update_transaction(int *number_of_transactions, char complete_budget[MAX_TRA
 
 
 
-int delete_transaction(int *number_of_transactions, char complete_budget[MAX_TRANSACTION_LENGTH + 1])
+int delete_transaction(int *number_of_transactions, struct transaction *line_item)
 {
    FILE* temp_pointer;
+   
+   struct transaction *p;
+   
    char id_string[MENU_INPUT_LENGTH + 1];
    char menu_string[MENU_INPUT_LENGTH + 1];
    
@@ -414,7 +403,7 @@ int delete_transaction(int *number_of_transactions, char complete_budget[MAX_TRA
    
    int i, id = 0;
    
-   (void) read_transactions(number_of_transactions, complete_budget);
+   (void) read_transactions(number_of_transactions, line_item);
    
    do
    {
@@ -479,19 +468,22 @@ int delete_transaction(int *number_of_transactions, char complete_budget[MAX_TRA
          exit(EXIT_FAILURE);
       }
       
-      /* Remove the deleted transaction from the 2d array */
+      /* Remove the deleted transaction from the array of structures */
+      p = line_item;
       for(i = 0; i < *number_of_transactions; i++)
       {
-         if(i >= *number_of_transactions)
+         if(i >= id)
          {
-            strcpy(complete_budget + (i * (MAX_TRANSACTION_LENGTH + 1)), complete_budget + ((i + 1) * (MAX_TRANSACTION_LENGTH + 1)));
+            p = p + 1;
          }
+         p++;
       }
       
       /* Write the information to the file */
-      for(i = 0; i < *number_of_transactions - 1; i++)
+      for(i = 0; i < *number_of_transactions; i++)
       {
-         fprintf(temp_pointer, "%s", complete_budget + (i * (MAX_TRANSACTION_LENGTH + 1)));
+         fprintf(temp_pointer, "%s|%s|%s|%s|\n", line_item->date, line_item->amount, line_item->type, line_item->description);
+         line_item++;
       }
       
       fclose(temp_pointer);
