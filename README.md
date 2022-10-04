@@ -21,4 +21,4 @@ I plan to use various data structures to improve c_budget. I am rebuilding c_bud
 
 Also, you can compile c_budget on Windows using the following command:
 
-- cl -W4 c_budget c_budget.c c_budget_crud_operations.c c_budget_menus.c c_budget_read_input.c c_budget_validation.c -link -out:c_budget.exe
+- cl -W4 c_budget_array_of_structures c_budget_array_of_structures.c c_budget_crud_operations.c c_budget_menus.c c_budget_read_input.c c_budget_validation.c -link -out:c_budget.exe
