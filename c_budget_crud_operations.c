@@ -30,9 +30,6 @@
 #include "c_budget_validation.h"
 #include "c_budget_menus.h"
 
-char *build_transaction_string(const char *input, char *completed_transaction);
-char *parse_transaction_string(char *transaction_field, char *complete_transaction_string);
-
 
 
 int create_transaction(int *number_of_transactions, struct transaction *line_item)
@@ -470,17 +467,17 @@ int delete_transaction(int *number_of_transactions, struct transaction *line_ite
       
       /* Remove the deleted transaction from the array of structures */
       p = line_item;
-      for(i = 0; i < *number_of_transactions; i++)
+      for(i = 0; i < *number_of_transactions - 1; i++)
       {
-         if(i >= id)
+         if(i >= id - 1)
          {
-            p = p + 1;
+            *p = *(p + 1);
          }
          p++;
       }
       
       /* Write the information to the file */
-      for(i = 0; i < *number_of_transactions; i++)
+      for(i = 0; i < *number_of_transactions - 1; i++)
       {
          fprintf(temp_pointer, "%s|%s|%s|%s|\n", line_item->date, line_item->amount, line_item->type, line_item->description);
          line_item++;
@@ -502,27 +499,4 @@ int delete_transaction(int *number_of_transactions, struct transaction *line_ite
 }
 
 
-
-/* Separate a full transaction line from the budget file
- * into its component parts (i.e., date, amount, type,
- * and descirption
- *
-char *parse_transaction_string(char *transaction_field, char *complete_transaction_string)
-{
-   char *p;
-   p = transaction_field;
-   
-   while((*complete_transaction_string != '|') && (*complete_transaction_string))
-   {
-      *p = *complete_transaction_string++;
-      p++;
-   }
-   
-   *p = '\0';
-   p = ++complete_transaction_string;
-   
-   return p;
-}
-
-*/
 
