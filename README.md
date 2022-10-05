@@ -16,8 +16,9 @@ I plan to use various data structures to improve c_budget. I am rebuilding c_bud
 1. c_budget (original)
 2. c_budget_2d_array
 3. c_budget_array_of_structures
-4. c_budget_linked_list
-5. c_budget_ordered_list
+4. c_budget_dynamic_strings
+5. c_budget_linked_list
+6. c_budget_ordered_list
 
 Also, you can compile c_budget on Windows using the following command:
 
