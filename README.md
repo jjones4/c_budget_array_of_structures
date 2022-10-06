@@ -1,4 +1,4 @@
-## c_budget
+## c_budget_array_of_structures
 
 c_budget is a simple command line app which stores transactions in a file called budget.txt. Take a look at the budget.txt file to see the structure of the data storage system.
 
